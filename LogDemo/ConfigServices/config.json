@@ -1,0 +1,10 @@
+﻿{
+  "SmtpService": "localhost:80",
+  "Proxy": "https://localhost:8081",
+  "DB": {
+    "Address": "127.0.0.1",
+    "Port": 3306,
+    "User": "root",
+    "Password": "123456"
+  }
+}
