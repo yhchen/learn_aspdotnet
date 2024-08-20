@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreDemo1", "EFCoreDemo1\EFCoreDemo1.csproj", "{EEF9D54A-F82C-4921-8D67-9091C51792FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreScaffoldMigration", "EFCoreScaffoldMigration\EFCoreScaffoldMigration.csproj", "{0125908D-5F00-4D3B-B6F1-D123AB3DF807}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{EEF9D54A-F82C-4921-8D67-9091C51792FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEF9D54A-F82C-4921-8D67-9091C51792FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEF9D54A-F82C-4921-8D67-9091C51792FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0125908D-5F00-4D3B-B6F1-D123AB3DF807}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0125908D-5F00-4D3B-B6F1-D123AB3DF807}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0125908D-5F00-4D3B-B6F1-D123AB3DF807}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0125908D-5F00-4D3B-B6F1-D123AB3DF807}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
