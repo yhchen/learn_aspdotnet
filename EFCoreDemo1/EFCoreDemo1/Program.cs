@@ -2,6 +2,7 @@
 
 using EFCoreDemo1;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 using TestDbContext testDbContext = new();
 
