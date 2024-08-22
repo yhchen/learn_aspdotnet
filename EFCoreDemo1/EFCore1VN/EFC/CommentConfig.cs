@@ -10,6 +10,6 @@ public class CommentConfig : IEntityTypeConfiguration<Comment>
     {
         builder.ToTable("T_Comment");
         builder.Property(c => c.Message).HasMaxLength(512).IsUnicode().IsRequired();
-        builder.HasOne<Article>(c => c.Article).WithMany(a => a.Comments).IsRequired();
+        builder.HasOne<Article>(c => c.Article).WithMany(a => a.Comments).HasForeignKey(a => a.ArticleId).IsRequired();
     }
 }
