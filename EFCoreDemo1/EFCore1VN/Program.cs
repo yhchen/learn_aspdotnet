@@ -4,6 +4,7 @@ using EFCore1VN.EFC;
 using EFCore1VN.EFC_Orga;
 using EFCore1VN.EFStudentTeacher;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector.Logging;
 using Newtonsoft.Json;
 
 await using var testDbContext = new TestDbContext();
@@ -13,7 +14,8 @@ await using var testDbContext = new TestDbContext();
 // await QueryArticleParticle(testDbContext);
 // await InsertOrgUnits(testDbContext);
 // await QueryOrgUnit(testDbContext);
-await InsertStudentsAndTeachers(testDbContext);
+// await InsertStudentsAndTeachers(testDbContext, 100);
+await QueryTeachersAndStudents(testDbContext, 2, 5);
 
 // --------------------------------------------------------------------------------
 async Task InsertArticleAndComment(TestDbContext dbContext)
@@ -149,11 +151,11 @@ async Task QueryOrgUnit(TestDbContext dbContext)
 
 // --------------------------------------------------------------------------------
 // insert student and teachers
-async Task InsertStudentsAndTeachers(TestDbContext dbContext)
+async Task InsertStudentsAndTeachers(TestDbContext dbContext, int count)
 {
     List<Teacher> teachers = new();
     List<Student> students = new();
-    for (int i = 1; i <= 10; ++i)
+    for (int i = 1; i <= count; ++i)
     {
         teachers.Add(new() { Name = "Teacher_" + i });
         students.Add(new() { Name = "Student_" + i });
@@ -166,6 +168,27 @@ async Task InsertStudentsAndTeachers(TestDbContext dbContext)
 
     dbContext.Teachers.AddRange(teachers);
     await dbContext.SaveChangesAsync();
+}
+
+// --------------------------------------------------------------------------------
+// query Teachers
+async Task QueryTeachersAndStudents(TestDbContext dbContext, int page, int pageSize)
+{
+    var totalCount = await dbContext.Teachers.CountAsync();
+    var maxPage = (totalCount + pageSize - 1) / pageSize;
+    Console.WriteLine($"Total Count: {totalCount}, Max Page Count: {maxPage}");
+    var teachers = await dbContext.Teachers.Include(t => t.Students)
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
+    foreach (var teacher in teachers)
+    {
+        Console.WriteLine($"{teacher.Id},{teacher.Name}");
+        foreach (var teacherStudent in teacher.Students)
+        {
+            Console.WriteLine($"\t{teacherStudent.Id},{teacherStudent.Name}");
+        }
+    }
 }
 
 // --------------------------------------------------------------------------------
