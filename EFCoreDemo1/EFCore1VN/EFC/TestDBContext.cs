@@ -1,3 +1,4 @@
+using EFCore1VN.EFC_1;
 using Microsoft.EntityFrameworkCore;
 
 namespace EFCore1VN.EFC;
@@ -7,6 +8,10 @@ public class TestDbContext : DbContext
     public DbSet<Article> Articles { get; set; }
 
     public DbSet<Comment> Comments { get; set; }
+
+    public DbSet<User> Users { get; set; }
+
+    public DbSet<Leave> Leaves { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
