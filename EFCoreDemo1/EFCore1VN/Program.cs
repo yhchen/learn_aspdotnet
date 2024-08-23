@@ -15,7 +15,8 @@ await using var testDbContext = new TestDbContext();
 // await InsertOrgUnits(testDbContext);
 // await QueryOrgUnit(testDbContext);
 // await InsertStudentsAndTeachers(testDbContext, 100);
-await QueryTeachersAndStudents(testDbContext, 2, 5);
+// await QueryTeachersAndStudents(testDbContext, 2, 5);
+await ExecuteOriginSql(testDbContext);
 
 // --------------------------------------------------------------------------------
 async Task InsertArticleAndComment(TestDbContext dbContext)
@@ -192,3 +193,18 @@ async Task QueryTeachersAndStudents(TestDbContext dbContext, int page, int pageS
 }
 
 // --------------------------------------------------------------------------------
+// Update origin sql
+async Task ExecuteOriginSql(TestDbContext dbContext)
+{
+    string name = "CYH";
+    FormattableString sql = @$"INSERT INTO t_teacher (Name) VALUES ({name})";
+    var res = await dbContext.Database.ExecuteSqlInterpolatedAsync(sql);
+    Console.WriteLine($"Execute Sql:{sql} Result: {res}");
+    string titlePattern = "%Hello%";
+    var articles = dbContext.Articles
+        .FromSqlInterpolated($"select * from t_article where title like {titlePattern} order by uuid()").Take(3);
+    await foreach (var article in (IAsyncEnumerable<Article>)articles)
+    {
+        Console.WriteLine($"article: {article.Id}, {article.Title}, {article.Message}");
+    }
+}
