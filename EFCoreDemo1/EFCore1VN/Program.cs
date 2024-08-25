@@ -1,11 +1,13 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Linq;
 using EFCore1VN.EFC;
+using EFCore1VN.EFC_1;
 using EFCore1VN.EFC_Orga;
+using EFCore1VN.EFCHouser;
 using EFCore1VN.EFStudentTeacher;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector.Logging;
-using Newtonsoft.Json;
 
 await using var testDbContext = new TestDbContext();
 
@@ -16,7 +18,8 @@ await using var testDbContext = new TestDbContext();
 // await QueryOrgUnit(testDbContext);
 // await InsertStudentsAndTeachers(testDbContext, 100);
 // await QueryTeachersAndStudents(testDbContext, 2, 5);
-await ExecuteOriginSql(testDbContext);
+// await ExecuteOriginSql(testDbContext);
+await 悲观并发锁();
 
 // --------------------------------------------------------------------------------
 async Task InsertArticleAndComment(TestDbContext dbContext)
@@ -179,6 +182,7 @@ async Task QueryTeachersAndStudents(TestDbContext dbContext, int page, int pageS
     var maxPage = (totalCount + pageSize - 1) / pageSize;
     Console.WriteLine($"Total Count: {totalCount}, Max Page Count: {maxPage}");
     var teachers = await dbContext.Teachers.Include(t => t.Students)
+        .IgnoreQueryFilters() // 忽略全局搜索过滤器
         .Skip((page - 1) * pageSize)
         .Take(pageSize)
         .ToListAsync();
@@ -207,4 +211,48 @@ async Task ExecuteOriginSql(TestDbContext dbContext)
     {
         Console.WriteLine($"article: {article.Id}, {article.Title}, {article.Message}");
     }
+}
+
+async Task 悲观并发锁()
+{
+    long houseId;
+    {
+        await using var dbContext = new TestDbContext();
+
+        var house = new House { Address = DateTime.Now.ToString() };
+        await dbContext.Houses.AddAsync(house);
+        await dbContext.SaveChangesAsync();
+        dbContext.Dispose();
+        houseId = house.Id;
+    }
+
+    async Task UpdateLeave(long houseId)
+    {
+        Thread.Sleep(10);
+        await using var context = new TestDbContext();
+        await using var tx = context.Database.BeginTransaction();
+        var queryHouse = await context.Houses
+            .FromSqlInterpolated($"select * from t_house where Id = {houseId} for update")
+            .SingleAsync();
+        if (string.IsNullOrEmpty(queryHouse.Owner))
+        {
+            queryHouse.Owner = DateTime.Now.ToString();
+            Console.WriteLine("房子赋予了新主人！");
+        }
+        else
+        {
+            Console.WriteLine("房子已被占用！");
+        }
+
+        await context.SaveChangesAsync();
+        await tx.CommitAsync();
+    }
+
+    List<Task> tasks = new();
+    for (int i = 0; i < 3; ++i)
+    {
+        tasks.Add(Task.Run(async () => await UpdateLeave(houseId)));
+    }
+
+    Task.WaitAll(tasks.ToArray());
 }

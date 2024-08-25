@@ -10,5 +10,6 @@ public class LeaveConfig : IEntityTypeConfiguration<Leave>
         builder.ToTable("T_Leave");
         builder.HasOne<User>(l => l.Requset).WithMany().HasForeignKey(l => l.RequestId).IsRequired();
         builder.HasOne<User>(l => l.Approver).WithMany().HasForeignKey(l => l.ApproverId).IsRequired();
+        builder.HasQueryFilter(l => !l.IsDeleted);
     }
 }

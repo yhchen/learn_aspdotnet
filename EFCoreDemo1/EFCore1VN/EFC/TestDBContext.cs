@@ -1,5 +1,6 @@
 using EFCore1VN.EFC_1;
 using EFCore1VN.EFC_Orga;
+using EFCore1VN.EFCHouser;
 using EFCore1VN.EFStudentTeacher;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -22,6 +23,8 @@ public class TestDbContext : DbContext
     public DbSet<Teacher> Teachers { get; set; }
 
     public DbSet<Student> Students { get; set; }
+
+    public DbSet<House> Houses { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

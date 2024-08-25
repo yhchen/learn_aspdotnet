@@ -11,4 +11,6 @@ public class Leave
     public User? Approver { get; set; }
 
     public required string Remarks { get; set; }
+    
+    public bool IsDeleted { get; set; }
 }

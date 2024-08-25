@@ -9,5 +9,6 @@ public class TeacherConfig : IEntityTypeConfiguration<Teacher>
     {
         builder.ToTable("T_Teacher");
         builder.Property(t => t.Name).HasMaxLength(64).IsUnicode().IsRequired();
+        builder.HasQueryFilter(t => !t.IsDeleted);
     }
 }

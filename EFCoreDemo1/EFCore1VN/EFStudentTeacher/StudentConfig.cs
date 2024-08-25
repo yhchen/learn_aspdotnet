@@ -12,5 +12,6 @@ public class StudentConfig : IEntityTypeConfiguration<Student>
         builder.HasMany<Teacher>(s => s.Teachers)
             .WithMany(t => t.Students)
             .UsingEntity(str => { str.ToTable("T_Student_Teacher_Relation"); });
+        builder.HasQueryFilter(s => !s.IsDeleted);
     }
 }
