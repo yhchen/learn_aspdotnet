@@ -12,16 +12,23 @@ using MySqlConnector.Logging;
 
 await using var testDbContext = new TestDbContext();
 
-// await InsertArticleAndComment(testDbContext);
-// await QueryArticleJoinWithComment(testDbContext);
-// await QueryArticleParticle(testDbContext);
-// await InsertOrgUnits(testDbContext);
-// await QueryOrgUnit(testDbContext);
-// await InsertStudentsAndTeachers(testDbContext, 100);
-// await QueryTeachersAndStudents(testDbContext, 2, 5);
-// await ExecuteOriginSql(testDbContext);
-await 悲观并发锁();
-await 乐观并发锁();
+try
+{
+    // await InsertArticleAndComment(testDbContext);
+    // await QueryArticleJoinWithComment(testDbContext);
+    // await QueryArticleParticle(testDbContext);
+    // await InsertOrgUnits(testDbContext);
+    // await QueryOrgUnit(testDbContext);
+    // await InsertStudentsAndTeachers(testDbContext, 100);
+    // await QueryTeachersAndStudents(testDbContext, 2, 5);
+    // await ExecuteOriginSql(testDbContext);
+    await 悲观并发锁();
+    await 乐观并发锁();
+}
+catch (Exception e)
+{
+    Console.WriteLine(e);
+}
 
 // --------------------------------------------------------------------------------
 async Task InsertArticleAndComment(TestDbContext dbContext)
@@ -221,39 +228,38 @@ async Task 悲观并发锁()
     {
         await using var dbContext = new TestDbContext();
 
-        var house = new House { Address = DateTime.Now.ToString() };
-        await dbContext.Houses.AddAsync(house);
+        var house = new House1 { Address = DateTime.Now.ToString() };
+        await dbContext.House1s.AddAsync(house);
         await dbContext.SaveChangesAsync();
         dbContext.Dispose();
         houseId = house.Id;
     }
 
-    async Task UpdateHouse(long houseId)
+    async Task UpdateHouse1(long houseId)
     {
-        Thread.Sleep(10);
+        await Task.Delay(100);
         await using var context = new TestDbContext();
         await using var tx = context.Database.BeginTransaction();
-        var queryHouse = await context.Houses
-            .FromSqlInterpolated($"select * from t_house where Id = {houseId} for update")
+        var queryHouse = await context.House1s
+            .FromSqlInterpolated($"select * from t_house1 where Id = {houseId} for update")
             .SingleAsync();
         if (string.IsNullOrEmpty(queryHouse.Owner))
         {
             queryHouse.Owner = DateTime.Now.ToString();
             Console.WriteLine("房子赋予了新主人！");
+            await context.SaveChangesAsync();
+            await tx.CommitAsync();
         }
         else
         {
             Console.WriteLine("房子已被占用！");
         }
-
-        await context.SaveChangesAsync();
-        await tx.CommitAsync();
     }
 
     List<Task> tasks = new();
     for (int i = 0; i < 3; ++i)
     {
-        tasks.Add(Task.Run(async () => await UpdateHouse(houseId)));
+        tasks.Add(Task.Run(async () => await UpdateHouse1(houseId)));
     }
 
     Task.WaitAll(tasks.ToArray());
@@ -269,33 +275,32 @@ async Task 乐观并发锁()
         var house = new House { Address = DateTime.Now.ToString() };
         await dbContext.Houses.AddAsync(house);
         await dbContext.SaveChangesAsync();
-        dbContext.Dispose();
         houseId = house.Id;
+        dbContext.Dispose();
     }
 
     async Task UpdateHouse(long houseId)
     {
-        Thread.Sleep(10);
+        await Task.Delay(100);
         await using var context = new TestDbContext();
         var queryHouse = await context.Houses.SingleAsync(h => h.Id == houseId);
         if (string.IsNullOrEmpty(queryHouse.Owner))
         {
             queryHouse.Owner = DateTime.Now.ToString();
             Console.WriteLine("房子赋予了新主人！");
+            try
+            {
+                await context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException _)
+            {
+                Console.WriteLine("并发访问冲突！！！房子已被占用！");
+                // Console.WriteLine(_);
+            }
         }
         else
         {
             Console.WriteLine("房子已被占用！");
-        }
-
-        try
-        {
-            await context.SaveChangesAsync();
-        }
-        catch (DBConcurrencyException e)
-        {
-            Console.WriteLine("并发访问冲突！！！");
-            Console.WriteLine(e);
         }
     }
 

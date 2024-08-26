@@ -4,6 +4,7 @@ using EFCore1VN.EFC;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCore1VN.Migrations
 {
     [DbContext(typeof(TestDbContext))]
-    partial class TestDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240826045117_House1")]
+    partial class House1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,9 +92,7 @@ namespace EFCore1VN.Migrations
                     b.Property<string>("Owner")
                         .IsConcurrencyToken()
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext")
-                        .HasDefaultValue("");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -115,9 +116,7 @@ namespace EFCore1VN.Migrations
 
                     b.Property<string>("Owner")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext")
-                        .HasDefaultValue("");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

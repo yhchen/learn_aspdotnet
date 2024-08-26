@@ -1,6 +1,6 @@
-namespace EFCore1VN.EFCHouser;
+﻿namespace EFCore1VN.EFCHouser;
 
-public class House
+public class House1
 {
     public long Id { get; set; }
 
