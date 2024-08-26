@@ -224,6 +224,7 @@ async Task ExecuteOriginSql(TestDbContext dbContext)
 
 async Task 悲观并发锁()
 {
+    Console.WriteLine("-----------------------------------------------------");
     long houseId;
     {
         await using var dbContext = new TestDbContext();
@@ -235,7 +236,7 @@ async Task 悲观并发锁()
         houseId = house.Id;
     }
 
-    async Task UpdateHouse1(long houseId)
+    async Task UpdateHouse1(long houseId, string owner)
     {
         await Task.Delay(100);
         await using var context = new TestDbContext();
@@ -245,21 +246,22 @@ async Task 悲观并发锁()
             .SingleAsync();
         if (string.IsNullOrEmpty(queryHouse.Owner))
         {
-            queryHouse.Owner = DateTime.Now.ToString();
-            Console.WriteLine("房子赋予了新主人！");
+            queryHouse.Owner = owner;
+            Console.WriteLine($"房子赋予了新主人[{owner}]！");
             await context.SaveChangesAsync();
             await tx.CommitAsync();
         }
         else
         {
-            Console.WriteLine("房子已被占用！");
+            Console.WriteLine($"房子已被[{queryHouse.Owner}]占用！");
         }
     }
 
     List<Task> tasks = new();
     for (int i = 0; i < 3; ++i)
     {
-        tasks.Add(Task.Run(async () => await UpdateHouse1(houseId)));
+        var id = i;
+        tasks.Add(Task.Run(async () => await UpdateHouse1(houseId, $"Owner_{id}")));
     }
 
     Task.WaitAll(tasks.ToArray());
@@ -268,6 +270,7 @@ async Task 悲观并发锁()
 
 async Task 乐观并发锁()
 {
+    Console.WriteLine("-----------------------------------------------------");
     long houseId;
     {
         await using var dbContext = new TestDbContext();
@@ -279,18 +282,18 @@ async Task 乐观并发锁()
         dbContext.Dispose();
     }
 
-    async Task UpdateHouse(long houseId)
+    async Task UpdateHouse(long houseId, string owner)
     {
         await Task.Delay(100);
         await using var context = new TestDbContext();
         var queryHouse = await context.Houses.SingleAsync(h => h.Id == houseId);
         if (string.IsNullOrEmpty(queryHouse.Owner))
         {
-            queryHouse.Owner = DateTime.Now.ToString();
-            Console.WriteLine("房子赋予了新主人！");
+            queryHouse.Owner = owner;
             try
             {
                 await context.SaveChangesAsync();
+                Console.WriteLine($"房子赋予了新主人[{owner}]！");
             }
             catch (DbUpdateConcurrencyException _)
             {
@@ -300,14 +303,15 @@ async Task 乐观并发锁()
         }
         else
         {
-            Console.WriteLine("房子已被占用！");
+            Console.WriteLine($"房子已被[{queryHouse.Owner}]占用！");
         }
     }
 
     List<Task> tasks = new();
     for (int i = 0; i < 3; ++i)
     {
-        tasks.Add(Task.Run(async () => await UpdateHouse(houseId)));
+        var id = i;
+        tasks.Add(Task.Run(async () => await UpdateHouse(houseId, $"Owner_{id}")));
     }
 
     Task.WaitAll(tasks.ToArray());
