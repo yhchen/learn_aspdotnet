@@ -27,6 +27,8 @@ public class TestDbContext : DbContext
     public DbSet<House> Houses { get; set; }
     public DbSet<House1> House1s { get; set; }
 
+    public DbSet<HouseVersion> HouseVersions { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);

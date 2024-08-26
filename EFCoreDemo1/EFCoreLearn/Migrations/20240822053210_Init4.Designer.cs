@@ -24,7 +24,7 @@ namespace EFCore1VN.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("EFCore1VN.EFC.Article", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC.Article", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -49,7 +49,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_Article", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC.Comment", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC.Comment", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -73,7 +73,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_Comment", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_1.Leave", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_1.Leave", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,7 +100,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_Leave", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_1.User", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_1.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,7 +117,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_User", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_Orga.OrgUnit", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_Orga.OrgUnit", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -139,9 +139,9 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_OrgUnit", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC.Comment", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC.Comment", b =>
                 {
-                    b.HasOne("EFCore1VN.EFC.Article", "Article")
+                    b.HasOne("EFCoreLearn.EFC.Article", "Article")
                         .WithMany("Comments")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -150,15 +150,15 @@ namespace EFCore1VN.Migrations
                     b.Navigation("Article");
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_1.Leave", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_1.Leave", b =>
                 {
-                    b.HasOne("EFCore1VN.EFC_1.User", "Approver")
+                    b.HasOne("EFCoreLearn.EFC_1.User", "Approver")
                         .WithMany()
                         .HasForeignKey("ApproverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EFCore1VN.EFC_1.User", "Requset")
+                    b.HasOne("EFCoreLearn.EFC_1.User", "Requset")
                         .WithMany()
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -169,9 +169,9 @@ namespace EFCore1VN.Migrations
                     b.Navigation("Requset");
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_Orga.OrgUnit", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_Orga.OrgUnit", b =>
                 {
-                    b.HasOne("EFCore1VN.EFC_Orga.OrgUnit", "Parent")
+                    b.HasOne("EFCoreLearn.EFC_Orga.OrgUnit", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -180,12 +180,12 @@ namespace EFCore1VN.Migrations
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC.Article", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC.Article", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_Orga.OrgUnit", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_Orga.OrgUnit", b =>
                 {
                     b.Navigation("Children");
                 });

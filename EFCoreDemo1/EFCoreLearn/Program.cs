@@ -22,8 +22,9 @@ try
     // await InsertStudentsAndTeachers(testDbContext, 100);
     // await QueryTeachersAndStudents(testDbContext, 2, 5);
     // await ExecuteOriginSql(testDbContext);
-    await 悲观并发锁();
-    await 乐观并发锁();
+    // await 悲观并发锁();
+    // await 乐观并发锁();
+    await HouseVersionInsertTest(testDbContext);
 }
 catch (Exception e)
 {
@@ -319,4 +320,11 @@ async Task 乐观并发锁()
     }
 
     Task.WaitAll(tasks.ToArray());
+}
+
+async Task HouseVersionInsertTest(TestDbContext dbContext)
+{
+    dbContext.HouseVersions.Add(
+        new HouseVersion() { Name = $"House_{dbContext.HouseVersions.Count() + 1}", Owner = "" });
+    dbContext.SaveChanges();
 }

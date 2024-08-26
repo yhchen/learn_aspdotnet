@@ -4,6 +4,7 @@ using EFCore1VN.EFC;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCore1VN.Migrations
 {
     [DbContext(typeof(TestDbContext))]
-    partial class TestDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240826045334_House2")]
+    partial class House2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace EFCore1VN.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("EFCore1VN.EFC.Article", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC.Article", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,7 +50,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_Article", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC.Comment", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC.Comment", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,7 +74,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_Comment", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFCHouser.House", b =>
+            modelBuilder.Entity("EFCoreLearn.EFCHouser.House", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -98,7 +101,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_House", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFCHouser.House1", b =>
+            modelBuilder.Entity("EFCoreLearn.EFCHouser.House1", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -124,7 +127,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_House1", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_1.Leave", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_1.Leave", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -155,7 +158,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_Leave", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_1.User", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_1.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -175,7 +178,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_User", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_Orga.OrgUnit", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_Orga.OrgUnit", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -199,7 +202,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_OrgUnit", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFStudentTeacher.Student", b =>
+            modelBuilder.Entity("EFCoreLearn.EFStudentTeacher.Student", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -221,7 +224,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_Student", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFStudentTeacher.Teacher", b =>
+            modelBuilder.Entity("EFCoreLearn.EFStudentTeacher.Teacher", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -258,9 +261,9 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_Student_Teacher_Relation", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC.Comment", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC.Comment", b =>
                 {
-                    b.HasOne("EFCore1VN.EFC.Article", "Article")
+                    b.HasOne("EFCoreLearn.EFC.Article", "Article")
                         .WithMany("Comments")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -269,15 +272,15 @@ namespace EFCore1VN.Migrations
                     b.Navigation("Article");
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_1.Leave", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_1.Leave", b =>
                 {
-                    b.HasOne("EFCore1VN.EFC_1.User", "Approver")
+                    b.HasOne("EFCoreLearn.EFC_1.User", "Approver")
                         .WithMany()
                         .HasForeignKey("ApproverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EFCore1VN.EFC_1.User", "Requset")
+                    b.HasOne("EFCoreLearn.EFC_1.User", "Requset")
                         .WithMany()
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -288,9 +291,9 @@ namespace EFCore1VN.Migrations
                     b.Navigation("Requset");
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_Orga.OrgUnit", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_Orga.OrgUnit", b =>
                 {
-                    b.HasOne("EFCore1VN.EFC_Orga.OrgUnit", "Parent")
+                    b.HasOne("EFCoreLearn.EFC_Orga.OrgUnit", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
 
@@ -299,25 +302,25 @@ namespace EFCore1VN.Migrations
 
             modelBuilder.Entity("StudentTeacher", b =>
                 {
-                    b.HasOne("EFCore1VN.EFStudentTeacher.Student", null)
+                    b.HasOne("EFCoreLearn.EFStudentTeacher.Student", null)
                         .WithMany()
                         .HasForeignKey("StudentsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EFCore1VN.EFStudentTeacher.Teacher", null)
+                    b.HasOne("EFCoreLearn.EFStudentTeacher.Teacher", null)
                         .WithMany()
                         .HasForeignKey("TeachersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC.Article", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC.Article", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_Orga.OrgUnit", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_Orga.OrgUnit", b =>
                 {
                     b.Navigation("Children");
                 });

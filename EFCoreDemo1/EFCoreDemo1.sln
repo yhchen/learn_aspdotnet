@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreDemo1", "EFCoreDemo1\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreScaffoldMigration", "EFCoreScaffoldMigration\EFCoreScaffoldMigration.csproj", "{0125908D-5F00-4D3B-B6F1-D123AB3DF807}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCore1VN", "EFCore1VN\EFCore1VN.csproj", "{E09B80D4-906B-4427-80CE-82751FECCEE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreLearn", "EFCoreLearn\EFCoreLearn.csproj", "{E09B80D4-906B-4427-80CE-82751FECCEE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

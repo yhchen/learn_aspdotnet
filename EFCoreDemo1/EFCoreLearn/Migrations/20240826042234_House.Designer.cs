@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCore1VN.Migrations
 {
     [DbContext(typeof(TestDbContext))]
-    [Migration("20240822082935_OrgForeignKey")]
-    partial class OrgForeignKey
+    [Migration("20240826042234_House")]
+    partial class House
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace EFCore1VN.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("EFCore1VN.EFC.Article", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC.Article", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -50,7 +50,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_Article", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC.Comment", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC.Comment", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,7 +74,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_Comment", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_1.Leave", b =>
+            modelBuilder.Entity("EFCoreLearn.EFCHouser.House", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -82,8 +82,37 @@ namespace EFCore1VN.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("ApproverId")
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Owner")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("T_House", (string)null);
+                });
+
+            modelBuilder.Entity("EFCoreLearn.EFC_1.Leave", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("ApproverId")
+                        .IsRequired()
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Remarks")
                         .IsRequired()
@@ -101,13 +130,16 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_Leave", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_1.User", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_1.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -118,7 +150,7 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_User", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_Orga.OrgUnit", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_Orga.OrgUnit", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -128,7 +160,9 @@ namespace EFCore1VN.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<long?>("ParentId")
                         .HasColumnType("bigint");
@@ -140,9 +174,68 @@ namespace EFCore1VN.Migrations
                     b.ToTable("T_OrgUnit", (string)null);
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC.Comment", b =>
+            modelBuilder.Entity("EFCoreLearn.EFStudentTeacher.Student", b =>
                 {
-                    b.HasOne("EFCore1VN.EFC.Article", "Article")
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .IsUnicode(true)
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("T_Student", (string)null);
+                });
+
+            modelBuilder.Entity("EFCoreLearn.EFStudentTeacher.Teacher", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .IsUnicode(true)
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("T_Teacher", (string)null);
+                });
+
+            modelBuilder.Entity("StudentTeacher", b =>
+                {
+                    b.Property<long>("StudentsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TeachersId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("StudentsId", "TeachersId");
+
+                    b.HasIndex("TeachersId");
+
+                    b.ToTable("T_Student_Teacher_Relation", (string)null);
+                });
+
+            modelBuilder.Entity("EFCoreLearn.EFC.Comment", b =>
+                {
+                    b.HasOne("EFCoreLearn.EFC.Article", "Article")
                         .WithMany("Comments")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -151,15 +244,15 @@ namespace EFCore1VN.Migrations
                     b.Navigation("Article");
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_1.Leave", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_1.Leave", b =>
                 {
-                    b.HasOne("EFCore1VN.EFC_1.User", "Approver")
+                    b.HasOne("EFCoreLearn.EFC_1.User", "Approver")
                         .WithMany()
                         .HasForeignKey("ApproverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EFCore1VN.EFC_1.User", "Requset")
+                    b.HasOne("EFCoreLearn.EFC_1.User", "Requset")
                         .WithMany()
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -170,21 +263,36 @@ namespace EFCore1VN.Migrations
                     b.Navigation("Requset");
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_Orga.OrgUnit", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_Orga.OrgUnit", b =>
                 {
-                    b.HasOne("EFCore1VN.EFC_Orga.OrgUnit", "Parent")
+                    b.HasOne("EFCoreLearn.EFC_Orga.OrgUnit", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
 
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC.Article", b =>
+            modelBuilder.Entity("StudentTeacher", b =>
+                {
+                    b.HasOne("EFCoreLearn.EFStudentTeacher.Student", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFCoreLearn.EFStudentTeacher.Teacher", null)
+                        .WithMany()
+                        .HasForeignKey("TeachersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EFCoreLearn.EFC.Article", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("EFCore1VN.EFC_Orga.OrgUnit", b =>
+            modelBuilder.Entity("EFCoreLearn.EFC_Orga.OrgUnit", b =>
                 {
                     b.Navigation("Children");
                 });
