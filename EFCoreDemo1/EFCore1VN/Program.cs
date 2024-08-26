@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Data;
 using System.Linq;
 using EFCore1VN.EFC;
 using EFCore1VN.EFC_1;
@@ -20,6 +21,7 @@ await using var testDbContext = new TestDbContext();
 // await QueryTeachersAndStudents(testDbContext, 2, 5);
 // await ExecuteOriginSql(testDbContext);
 await 悲观并发锁();
+await 乐观并发锁();
 
 // --------------------------------------------------------------------------------
 async Task InsertArticleAndComment(TestDbContext dbContext)
@@ -226,7 +228,7 @@ async Task 悲观并发锁()
         houseId = house.Id;
     }
 
-    async Task UpdateLeave(long houseId)
+    async Task UpdateHouse(long houseId)
     {
         Thread.Sleep(10);
         await using var context = new TestDbContext();
@@ -251,7 +253,56 @@ async Task 悲观并发锁()
     List<Task> tasks = new();
     for (int i = 0; i < 3; ++i)
     {
-        tasks.Add(Task.Run(async () => await UpdateLeave(houseId)));
+        tasks.Add(Task.Run(async () => await UpdateHouse(houseId)));
+    }
+
+    Task.WaitAll(tasks.ToArray());
+}
+
+
+async Task 乐观并发锁()
+{
+    long houseId;
+    {
+        await using var dbContext = new TestDbContext();
+
+        var house = new House { Address = DateTime.Now.ToString() };
+        await dbContext.Houses.AddAsync(house);
+        await dbContext.SaveChangesAsync();
+        dbContext.Dispose();
+        houseId = house.Id;
+    }
+
+    async Task UpdateHouse(long houseId)
+    {
+        Thread.Sleep(10);
+        await using var context = new TestDbContext();
+        var queryHouse = await context.Houses.SingleAsync(h => h.Id == houseId);
+        if (string.IsNullOrEmpty(queryHouse.Owner))
+        {
+            queryHouse.Owner = DateTime.Now.ToString();
+            Console.WriteLine("房子赋予了新主人！");
+        }
+        else
+        {
+            Console.WriteLine("房子已被占用！");
+        }
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DBConcurrencyException e)
+        {
+            Console.WriteLine("并发访问冲突！！！");
+            Console.WriteLine(e);
+        }
+    }
+
+    List<Task> tasks = new();
+    for (int i = 0; i < 3; ++i)
+    {
+        tasks.Add(Task.Run(async () => await UpdateHouse(houseId)));
     }
 
     Task.WaitAll(tasks.ToArray());
