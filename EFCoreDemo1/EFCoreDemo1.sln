@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreScaffoldMigration", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreLearn", "EFCoreLearn\EFCoreLearn.csproj", "{E09B80D4-906B-4427-80CE-82751FECCEE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreExpression", "EFCoreExpression\EFCoreExpression.csproj", "{F9CED3F7-71A5-480A-9DCB-0709E53174FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{E09B80D4-906B-4427-80CE-82751FECCEE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E09B80D4-906B-4427-80CE-82751FECCEE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E09B80D4-906B-4427-80CE-82751FECCEE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9CED3F7-71A5-480A-9DCB-0709E53174FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9CED3F7-71A5-480A-9DCB-0709E53174FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9CED3F7-71A5-480A-9DCB-0709E53174FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9CED3F7-71A5-480A-9DCB-0709E53174FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
