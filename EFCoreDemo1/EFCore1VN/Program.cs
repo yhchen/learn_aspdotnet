@@ -230,6 +230,8 @@ async Task 悲观并发锁()
         await using var dbContext = new TestDbContext();
 
         var house = new House1 { Address = DateTime.Now.ToString() };
+        foreach (var h in await dbContext.House1s.ToListAsync())
+            h.IsDeleted = true;
         await dbContext.House1s.AddAsync(house);
         await dbContext.SaveChangesAsync();
         dbContext.Dispose();
@@ -274,6 +276,8 @@ async Task 乐观并发锁()
     long houseId;
     {
         await using var dbContext = new TestDbContext();
+        foreach (var h in await dbContext.Houses.ToListAsync())
+            h.IsDeleted = true;
 
         var house = new House { Address = DateTime.Now.ToString() };
         await dbContext.Houses.AddAsync(house);
