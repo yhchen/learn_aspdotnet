@@ -3,9 +3,9 @@
 public class Book
 {
     public long Id { get; set; }
-    public string Title { get; set; }
-    public string Author { get; set; }
-    public string Publisher { get; set; }
+    public required string Title { get; set; }
+    public required string Author { get; set; }
+    public required string Publisher { get; set; }
     public DateTime PublishDate { get; set; }
     public DateTime CreateDate { get; set; }
     public DateTime UpdateDate { get; set; }
