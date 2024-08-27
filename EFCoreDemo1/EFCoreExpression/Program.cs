@@ -9,9 +9,11 @@ using static System.Linq.Expressions.Expression;
 
 #pragma warning disable CS0162
 
-if (true)
+await using var context = new TestDbContext();
+
+// Expression tree
+if (false)
 {
-    // Expression tree
     Expression<Func<Book, bool>> e1 = b => b.Id > 5 && b.CreateDate > DateTime.Now;
     Expression<Func<Book, Book, double>> e2 = (b1, b2) => b1.Id + b2.Id;
 
@@ -65,11 +67,14 @@ if (false)
 
     WriteLine(e3);
     var c = e3.Compile();
-    var c1 = c.DynamicInvoke(new Book(){Id = 6, CreateDate = DateTime.Now.AddDays(1)});
+    var c1 = c.DynamicInvoke(new Book()
+    {
+        Id = 6, Title = "TestDynamicInvoke", Author = "CYH", Publisher = "G-bits", CreateDate = DateTime.Now.AddDays(1)
+    });
     Console.WriteLine(c1);
 }
 
-using var context = new TestDbContext();
+// 传入Expression方式查询
 if (false)
 {
     Expression<Func<Book, bool>> e1 = b => b.Id > 5 && b.CreateDate > DateTime.Now;
@@ -97,7 +102,8 @@ if (false)
     await context.SaveChangesAsync();
 }
 
-if (true)
+// 动态Expression构造查询函数
+if (false)
 {
     IEnumerable<Book> QueryExpression(string propertyName, object value)
     {
@@ -133,7 +139,7 @@ if (true)
         }
 
 
-        return context.Books.Where(expression.Compile());
+        return context!.Books.Where(expression.Compile());
     }
 
     WriteLine("----------------------------------------------------------------------");
@@ -159,5 +165,33 @@ if (true)
     }
 }
 
+// 动态Expression构造查询函数
+if (true)
+{
+    IQueryable<object[]> Query<T>(DbContext dbContext, params string[] propertyNames) where T : class
+    {
+        var p = Parameter(typeof(T));
+        List<Expression> propExprList = new();
+        foreach (var propertyName in propertyNames)
+        {
+            var prop = typeof(T).GetProperty(propertyName)!;
+            var propExpr = Convert(MakeMemberAccess(p, prop), typeof(object) /*prop.PropertyType*/);
+            propExprList.Add(propExpr);
+        }
+
+        var newArrayExpr = NewArrayInit(typeof(object), propExprList);
+        var selectExpr = Lambda<Func<T, object[]>>(newArrayExpr, p);
+        var query = dbContext.Set<T>().Select(selectExpr);
+        return query;
+    }
+
+    var res = Query<Book>(context, "Id", "Title", "Author", "Publisher", "PublishDate", "CreateDate", "UpdateDate",
+        "IsDeleted");
+
+    foreach (var row in res)
+    {
+        WriteLine(string.Join(",", row));
+    }
+}
 
 #pragma warning restore CS0162
