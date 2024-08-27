@@ -47,7 +47,7 @@ if (false)
                     MakeMemberAccess(b,
                         typeof(Book).GetProperty("Id")
                     ),
-                    Constant(5L, typeof(long))
+                    Constant(System.Convert.ChangeType(5, typeof(long)), typeof(long))
                 ),
                 MakeBinary(ExpressionType.GreaterThan,
                     MakeMemberAccess(b,
@@ -64,6 +64,9 @@ if (false)
         ;
 
     WriteLine(e3);
+    var c = e3.Compile();
+    var c1 = c.DynamicInvoke(new Book(){Id = 6, CreateDate = DateTime.Now.AddDays(1)});
+    Console.WriteLine(c1);
 }
 
 using var context = new TestDbContext();
