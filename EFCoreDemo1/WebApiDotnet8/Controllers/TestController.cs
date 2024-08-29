@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebApiDotnet6.Model;
+using WebApiDotnet8.Model;
 
-namespace WebApiDotnet6.Controllers;
+namespace WebApiDotnet8.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
