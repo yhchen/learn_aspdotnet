@@ -44,4 +44,10 @@ public class HelloController : ControllerBase
     {
         return i + j;
     }
+    
+    [HttpPut]
+    public int Add5([FromHeader] int i, [FromHeader] int j)
+    {
+        return i + j;
+    }
 }
