@@ -39,10 +39,12 @@ public class HelloController : ControllerBase
     }
 
     [HttpPost("{i}")]
-    public int Add4([FromRoute(Name = "i")] int i // FromRoute 可有可无
+    public int Add4(
+        // FromRoute 设置别名【前端传递的参数名为i】，后端接收的参数名为i1
+        [FromRoute(Name = "i")] int i1
         , [FromQuery] int j) // FromQuery 可有可无
     {
-        return i + j;
+        return i1 + j;
     }
     
     [HttpPut]
