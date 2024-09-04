@@ -1,13 +1,10 @@
 <template>
-  用户名：<input type="text" v-md-model="state.loginData.Username" />
-  密码：<input type="Password" v-md-model="state.loginData.Password" />
+  用户名：<input type="text" v-model="state.loginData.Username" />
+  密码：<input type="password" v-model="state.loginData.Password" />
   <input type="submit" value="登录" @click="loginSubmit" />
   <ul>
-    <li>
-      {{ state.loginData.UserName }} {{ state.loginData.Password }}
-    </li>
-    <li v-for="p in state.processes" :key="p.id">
-      {{ p.id }} {{ p.ProcessName }} {{ p.workingSet64 }}
+    <li v-for="p in state.workingInfos" :key="p.id">
+      {{ p.id }} {{ p.name }} {{ p.workingSet }}
     </li>
   </ul>
   </input>
@@ -19,9 +16,10 @@ import { reactive, onMounted } from 'vue';
 export default defineComponent({
   name: 'Login',
   setup() {
-    const state = reactive({ loginData: { Username: "", Password: "" }, processes: [{ id: 0, ProcessName: "", workingSet64: "" }], state: {} });
+    const state = reactive({ loginData: { Username: "", Password: "" }, workingInfos: [{ id: 0, name: "", workingSet: "" }], });
     const loginSubmit = async () => {
       const payload = state.loginData;
+      console.log(JSON.stringify(state, null, 2));
       const resp = await axios.post("http://localhost:5265/Login/Login", payload
         , {
           headers: {
@@ -33,7 +31,8 @@ export default defineComponent({
       if (!data.ok) {
         return { state, loginSubmit };
       }
-      state.processes = data.processes;
+      console.log(JSON.stringify(data));
+      state.workingInfos = data.workingInfos;
     }
     return { state, loginSubmit };
   }
