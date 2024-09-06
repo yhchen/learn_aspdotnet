@@ -1,0 +1,6 @@
+@ReflectionDemo_HostAddress = http://localhost:5070
+
+GET {{ReflectionDemo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
