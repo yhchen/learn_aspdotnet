@@ -11,6 +11,18 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<CalculationService>();
 
+// Add CORS services.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,6 +33,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Use CORS policy.
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthorization();
 

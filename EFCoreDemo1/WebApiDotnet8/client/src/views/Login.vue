@@ -29,7 +29,8 @@ export default defineComponent({
 
       const data = resp.data;
       if (!data.ok) {
-        return { state, loginSubmit };
+        alert("登录失败: " + state.loginData.Username);
+        return;
       }
       console.log(JSON.stringify(data));
       state.workingInfos = data.workingInfos;
